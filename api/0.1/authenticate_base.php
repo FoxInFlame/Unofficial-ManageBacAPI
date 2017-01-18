@@ -23,9 +23,9 @@ function getSession($username, $password, $domain = "intsch") {
   curl_setopt($ch, CURLOPT_HEADER, true);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
   $response = curl_exec($ch);
-  if(curl_getinfo($ch, CURLINFO_HTTP_CODE) == '404') {
+  if(curl_getinfo($ch, CURLINFO_HTTP_CODE) == "404") {
     echo json_encode(array(
-      'error' => 'ManageBac doesn\'t exist on this domain!'
+      "message" => "ManageBac doesn't exist on this domain!"
     ));
     http_response_code(404);
     die();
@@ -82,7 +82,7 @@ function getSession($username, $password, $domain = "intsch") {
   $response = curl_exec($ch);
   if(curl_getinfo($ch, CURLINFO_HTTP_CODE) == '200') {
     echo json_encode(array(
-      'error' => 'Wrong Credentials.'
+      "message" => "Wrong Credentials."
     ));
     http_response_code(401);
     die();
@@ -171,7 +171,7 @@ function getSession($username, $password, $domain = "intsch") {
     );
   } else {
     echo json_encode(array(
-      "error" => "Wrong Credentials."
+      "message" => "Wrong Credentials."
     ));
     http_response_code(401);
     die();
