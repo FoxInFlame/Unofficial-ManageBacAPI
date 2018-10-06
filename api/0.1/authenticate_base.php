@@ -84,9 +84,9 @@ function getSession($username, $password, $domain = 'intsch') {
 
     // Since each item is in the format of "name=value", we can use parse_str
     // which parses a string like it's a URL query string
-    parse_str($item, $cookie_array); // $cookie is now ["name" => "value"]
+    parse_str($item, $cookie_array); // $cookie_array is now ["name" => "value"]
 
-    // Filter out only the important ones
+    // Keep only cfduid and managebac session cookies
     if(isset($cookie_array['__cfduid']) || isset($cookie_array['_managebac_session'])) {
       
       // Merge and keep the cookie
@@ -108,17 +108,17 @@ function getSession($username, $password, $domain = 'intsch') {
   // Send a POST request to /sessions
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL, 'https://' . $domain . '.managebac.com/sessions');
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_HEADER, true);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Return body
+  curl_setopt($ch, CURLOPT_HEADER, true); // Return header
 
-  // Combine the array into a string like the one we received
+  // Combine the array into a string like the one we received: name=value;name=value;name=value
   $cookies_to_send = http_build_query($cookies_next, null, ';'); 
   curl_setopt($ch, CURLOPT_COOKIE, $cookies_to_send);
 
   // Ideally, we would want to send a HEAD request since we won't be using the body
   // but some servers respond differently when HEAD is sent instead of POST, so we
   // should stick with POST to be on the safe side.
-  curl_setopt($ch, CURLOPT_POST, 1);
+  curl_setopt($ch, CURLOPT_POST, 1); // Set as POST request
   curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
     'login' => $username,
     'password' => $password,
